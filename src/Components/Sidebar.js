@@ -7,7 +7,7 @@ const Sidebar = () => {
       <form action="" method="get" className="form">
         <div className="form__input--wrapper">
           <div className="form__input--name">
-            <label for="name">Name</label>
+            <label htmlFor="name">Name</label>
             <input
               type="text"
               name="name"
@@ -17,7 +17,7 @@ const Sidebar = () => {
             />
           </div>
           <div className="form__input--title">
-            <label for="name">Title</label>
+            <label htmlFor="name">Title</label>
             <input
               type="text"
               name="name"
@@ -27,7 +27,7 @@ const Sidebar = () => {
             />
           </div>
           <div className="form__textbox">
-            <label for="story">Question</label>
+            <label htmlFor="story">Question</label>
             <textarea
               id="story"
               name="story"

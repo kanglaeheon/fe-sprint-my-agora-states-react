@@ -1,56 +1,46 @@
 import React from "react";
+import { useState, useEffect, useRef } from "react";
+import Discussion from "./Discussion";
+// 아고라 스테이츠 서버에서 Discussions fetch한다.
+// App.js에서 관리중인 page state를 prop으로 받아와서 페이지에 따른 디스커션들을 렌더링
+// 10개씩 렌더링
 
-const Discussions = () => {
-  const convertToDiscussion = (obj) => {
-    const li = document.createElement("li"); // li 요소 생성
-    li.className = "discussion__container"; // 클래스 이름 지정
-
-    // 아바타 래퍼
-    const avatarWrapper = document.createElement("div");
-    avatarWrapper.className = "discussion__avatar--wrapper";
-    // 컨텐츠
-    const discussionContent = document.createElement("div");
-    discussionContent.className = "discussion__content";
-    // 답변 여부
-    const discussionAnswered = document.createElement("div");
-    discussionAnswered.className = "discussion__answered";
-
-    li.append(avatarWrapper, discussionContent, discussionAnswered);
-
-    // TODO: 객체 하나에 담긴 정보를 DOM에 적절히 넣어주세요.
-    // 아바타래퍼 > 아바타 이미지
-    const discussionAvatarImage = document.createElement("img");
-    discussionAvatarImage.className = "discussion__avatar--image";
-    discussionAvatarImage.src = obj.avatarUrl;
-    discussionAvatarImage.alt = "avatar of " + obj.author;
-    avatarWrapper.append(discussionAvatarImage);
-    // 컨텐츠 > 제목
-    const discussionTitle = document.createElement("h2");
-    discussionTitle.className = "discussion__title";
-    discussionContent.append(discussionTitle);
-    // 컨텐츠 > 제목 > 링크
-    const discussionTitleHref = document.createElement("a");
-    discussionTitleHref.href = obj.url;
-    discussionTitleHref.textContent = obj.title;
-    discussionTitle.append(discussionTitleHref);
-    // 컨텐츠 > 작성자, 작성일
-    const discussionInformation = document.createElement("div");
-    discussionInformation.className = "discussion__information";
-    discussionInformation.textContent = `${obj.author} / ${new Date(
-      obj.createdAt
-    ).toLocaleString()}`;
-    discussionContent.append(discussionInformation);
-    // 답변여부 > 답변? V 표시 : X 표시
-    const discussionAnsweredMark = document.createElement("p");
-    discussionAnsweredMark.textContent = obj.answer ? "✅" : "❌";
-    discussionAnswered.append(discussionAnsweredMark);
-
-    return li;
+const Discussions = ({ page }) => {
+  console.log(page);
+  const [discussionsData, setDiscussionsData] = useState([]);
+  const [pagedDiscussions, setPagedDiscussions] = useState([]);
+  // 아고라 데이터 fetch
+  const fetchAgoraData = async (page) => {
+    const tempArr = [];
+    await fetch("http://192.168.35.190:4000/discussions/")
+      .then((response) => response.json())
+      .then((response) => {
+        setDiscussionsData(response);
+        return response;
+      })
+      .then((response) => {
+        for (let i = 0; i <= Math.ceil(response.length / 10) - 1; i++) {
+          tempArr.push(response.slice(0 + i * 10, i * 10 + 10));
+        }
+        setPagedDiscussions(tempArr);
+      });
   };
+  // 초기 로딩시 fetch
+  useEffect(() => {
+    fetchAgoraData();
+  }, []);
+
+  // 페이지 변경시 리렌더링
+  //     useEffect(() => {}, [page]);
+  //   };
 
   return (
-    <section class="discussion__wrapper">
-      <ul class="discussions__container"></ul>
+    <section className="discussion__wrapper">
+      <ul className="discussions__container">
+        {pagedDiscussions[page].map((item) => {
+          return <Discussion key={item.id} item={item} />;
+        })}
+      </ul>
     </section>
   );
 };

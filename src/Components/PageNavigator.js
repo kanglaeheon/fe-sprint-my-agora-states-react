@@ -1,16 +1,16 @@
 import React from "react";
 
-const PageNavigator = () => {
+const PageNavigator = ({ page, prevPage, nextPage }) => {
   return (
-    <div class="pagination__container">
-      <div class="page__current--container">
-        <p class="page__current"></p>
+    <div className="pagination__container">
+      <div className="page__current--container">
+        <p className="page__current">{page}</p>
       </div>
-      <div class="page__buttons">
-        <button type="button" class="page__prev">
+      <div className="page__buttons">
+        <button type="button" className="page__prev" onClick={prevPage}>
           이전
         </button>
-        <button type="button" class="page__next">
+        <button type="button" className="page__next" onClick={nextPage}>
           다음
         </button>
       </div>
